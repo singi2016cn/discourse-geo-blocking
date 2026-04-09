@@ -40,10 +40,6 @@ after_initialize do
       sr = super
       return sr unless sr == :skip
 
-      if SiteSetting.geo_moderating_country_region_whitelist.split("|").include?(manager.user.custom_fields["geoblocking_last_ip_address"])
-        return
-      end
-
       origin = ::GeoBlocking::Lookup.is_moderated?(manager.user.custom_fields["geoblocking_last_ip_address"])
       if origin
         return I18n.t("geo_blocking.moderate_reason", { origin: origin })
