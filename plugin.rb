@@ -67,10 +67,6 @@ after_initialize do
       user.save_custom_fields(true)
     end
 
-    if SiteSetting.geo_blocking_country_region_whitelist.split("|").include?(ip)
-      return
-    end
-
     reason = ::GeoBlocking::Lookup.is_blocked?(ip)
     return unless reason
 

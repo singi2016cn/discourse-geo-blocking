@@ -25,12 +25,18 @@ module GeoBlocking
       return false unless ipinfo && ipinfo[:asn]
 
       if configuration == 'block'
+        if SiteSetting.geo_blocking_country_region_whitelist.split("|").include?(ip)
+          return false
+        end
         asn_blocklist = SiteSetting.geo_blocking_asn_blocklist
         log_blocked = SiteSetting.geo_blocking_log_blocked
         country_region_blocklist = SiteSetting.geo_blocking_country_region_blocklist
         action = 'blocking'
         log_allowed = SiteSetting.geo_blocking_log_allowed
       elsif configuration == 'moderate'
+        if SiteSetting.geo_moderating_country_region_whitelist.split("|").include?(ip)
+          return false
+        end
         asn_blocklist = SiteSetting.geo_moderating_asn_blocklist
         log_blocked = SiteSetting.geo_moderating_log_blocked
         country_region_blocklist = SiteSetting.geo_moderating_country_region_blocklist
