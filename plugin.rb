@@ -60,25 +60,19 @@ after_initialize do
     return if request.fullpath.start_with?("/admin/", "/message-bus/", "/theme-javascripts/", "/stylesheets/", "/letter_avatar_proxy/", "/svg-sprite/", "/extra-locales/")
 
     ip = request.env["HTTP_X_REAL_IP"] || request.env["REMOTE_ADDR"]
-    Rails.logger.info("[GeoBlocking] Checking IP: #{ip} for path: #{request.fullpath}")
 
     user = current_user
     if user
       user.custom_fields["geoblocking_last_ip_address"] = ip
       user.save_custom_fields(true)
-      Rails.logger.info("[GeoBlocking] Saved IP address for user id: #{user.id}")
     end
 
-    Rails.logger.info("[GeoBlocking] IPs #{SiteSetting.geo_blocking_country_region_whitelist} is whitelisted, allowing access")
     if SiteSetting.geo_blocking_country_region_whitelist.split("|").include?(ip)
-      Rails.logger.info("[GeoBlocking] IP #{ip} is whitelisted, allowing access")
       return
     end
 
     reason = ::GeoBlocking::Lookup.is_blocked?(ip)
     return unless reason
-
-    Rails.logger.warn("[GeoBlocking] Blocking IP: #{ip}, reason: #{reason}")
 
     if SiteSetting.geo_blocking_detailed_reason
       rescue_discourse_actions(:unavailable, 451, {custom_message: "geo_blocking.error_451_detailed",  custom_message_params: { origin: reason }})
