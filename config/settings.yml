@@ -11,7 +11,7 @@ plugins:
     default: ""
     type: list
     list_type: simple
-  geo_blocking_country_region_whitelist:
+  geo_blocking_ip_whitelist:
     client: false
     default: ""
     type: list
@@ -35,7 +35,7 @@ plugins:
     default: ""
     type: list
     list_type: simple
-  geo_moderating_country_region_whitelist:
+  geo_moderating_ip_whitelist:
     client: false
     default: ""
     type: list
